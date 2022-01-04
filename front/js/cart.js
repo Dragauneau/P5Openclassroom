@@ -1,24 +1,24 @@
 //Initialise le localStorage
-let localStorageProduct = JSON.parse(localStorage.getItem("product"));
-console.table(localStorageProduct);
+let localStorageCart = JSON.parse(localStorage.getItem("cart"));
+console.table(localStorageCart);
 const positionEmptyCart = document.querySelector("#cart__items");
 function getCart()
 {
     // Si le panier est vide
-    if (localStorageProduct === null || localStorageProduct == 0) 
+    if (localStorageCart === null || localStorageCart.length === 0) 
     {
         const emptyCart = `<p>Votre panier est vide</p>`;
         positionEmptyCart.innerHTML = emptyCart;
     } else 
     {
         // Si le panier n'est pas vide
-        for (let product in localStorageProduct)
+        for (let product in localStorageCart)
         {
         // Insert l'élément "article"
         let productArticle = document.createElement("article");
         document.querySelector("#cart__items").appendChild(productArticle);
         productArticle.className = "cart__item";
-        productArticle.setAttribute('data-id', localStorageProduct[product].productId);
+        productArticle.setAttribute('data-id', localStorageCart[product].productId);
         // Insert l'élément "div"
         let productDivImg = document.createElement("div");
         productArticle.appendChild(productDivImg);
@@ -26,8 +26,8 @@ function getCart()
         // Insert l'image
         let productImg = document.createElement("img");
         productDivImg.appendChild(productImg);
-        productImg.src = localStorageProduct[product].imgProduct;
-        productImg.alt = localStorageProduct[product].altImgProduct;
+        productImg.src = localStorageCart[product].imgProduct;
+        productImg.alt = localStorageCart[product].altImgProduct;
         // Insert l'élément "div"
         let productItemContent = document.createElement("div");
         productArticle.appendChild(productItemContent);
@@ -39,16 +39,16 @@ function getCart()
         // Insert le titre h3
         let productTitle = document.createElement("h2");
         productItemContentTitlePrice.appendChild(productTitle);
-        productTitle.innerHTML = localStorageProduct[product].articleName;
+        productTitle.innerHTML = localStorageCart[product].articleName;
         // Insert la couleur
         let productColor = document.createElement("p");
         productTitle.appendChild(productColor);
-        productColor.innerHTML = localStorageProduct[product].articleColor;
+        productColor.innerHTML = localStorageCart[product].articleColor;
         productColor.style.fontSize = "20px";
         // Insert le prix
         let productPrice = document.createElement("p");
         productItemContentTitlePrice.appendChild(productPrice);
-        productPrice.innerHTML = localStorageProduct[product].articlePrice + " €";
+        productPrice.innerHTML = localStorageCart[product].articlePrice + " €";
         // Insert l'élément "div"
         let productItemContentSettings = document.createElement("div");
         productItemContent.appendChild(productItemContentSettings);
@@ -64,7 +64,7 @@ function getCart()
         // Insert la quantité
         let productQuantity = document.createElement("input");
         productItemContentSettingsQuantity.appendChild(productQuantity);
-        productQuantity.value = localStorageProduct[product].articleQuantity;
+        productQuantity.value = localStorageCart[product].articleQuantity;
         productQuantity.className = "itemQuantity";
         productQuantity.setAttribute("type", "number");
         productQuantity.setAttribute("min", "1");
@@ -82,8 +82,9 @@ function getCart()
         }
     }
 }
-getCart();
-function getTotals()
+
+
+function getTotal()
 {
     // Récupère le total des quantités
     var elemsQtt = document.getElementsByClassName('itemQuantity');
@@ -100,15 +101,14 @@ function getTotals()
     totalPrice = 0;
     for (var i = 0; i < myLength; ++i) 
     {
-        totalPrice += (elemsQtt[i].valueAsNumber * localStorageProduct[i].articlePrice);
+        totalPrice += (elemsQtt[i].valueAsNumber * localStorageCart[i].articlePrice);
     }
     let productTotalPrice = document.getElementById('totalPrice');
     productTotalPrice.innerHTML = totalPrice;
     console.log(totalPrice);
 }
-getTotals();
 // Pour modifier une quantité de produit
-function modifyQtt() 
+function createChangeListeners() 
 {
     let qttModif = document.querySelectorAll(".itemQuantity");
     for (let k = 0; k < qttModif.length; k++)
@@ -117,20 +117,19 @@ function modifyQtt()
         {
             event.preventDefault();
             //Sélectionne l'element à modifier en fonction de son id ET sa couleur
-            let quantityModif = localStorageProduct[k].articleQuantity;
+            let quantityModif = localStorageCart[k].articleQuantity;
             let qttModifValue = qttModif[k].valueAsNumber;
-            const resultFind = localStorageProduct.find((el) => el.qttModifValue !== quantityModif);
+            const resultFind = localStorageCart.find((el) => el.qttModifValue !== quantityModif);
             resultFind.articleQuantity = qttModifValue;
-            localStorageProduct[k].articleQuantity = resultFind.articleQuantity;
-            localStorage.setItem("product", JSON.stringify(localStorageProduct));
+            localStorageCart[k].articleQuantity = resultFind.articleQuantity;
+            localStorage.setItem("cart", JSON.stringify(localStorageCart));
             // refresh
             location.reload();
         })
     }
 }
-modifyQtt();
 // Pour supprimer un produit
-function deleteProduct() 
+function createClickListeners() 
     {
     let btn_delete = document.querySelectorAll(".deleteItem");
     for (let j = 0; j < btn_delete.length; j++)
@@ -139,19 +138,18 @@ function deleteProduct()
         {
             event.preventDefault();
             //Sélectionne l'element à supprimer en fonction de son id ET sa couleur
-            let idDelete = localStorageProduct[j].productId;
-            let colorDelete = localStorageProduct[j].articleColor;
-            localStorageProduct = localStorageProduct.filter( el => el.productId !== idDelete || el.articleColor !== colorDelete );
-            localStorage.setItem("product", JSON.stringify(localStorageProduct));
+            let idDelete = localStorageCart[j].productId;
+            let colorDelete = localStorageCart[j].articleColor;
+            localStorageCart = localStorageCart.filter( el => el.productId !== idDelete || el.articleColor !== colorDelete );
+            localStorage.setItem("cart", JSON.stringify(localStorageCart));
             //Alerte produit supprimé puis refresh
             alert("Ce produit a bien été supprimé du panier");
             location.reload();
         })
     }
 }
-deleteProduct();
 //Formulaire regex
-function getForm() 
+function createForm() 
 {
     //Ajout des Regex
     let form = document.querySelector(".cart__order__form");
@@ -253,19 +251,17 @@ function getForm()
         }
     };
     }
-getForm();
-
-function postForm(){
-    const btn_commander = document.getElementById("order");
-    btn_commander.addEventListener("click", (event)=>{
+function createOrderButtonClickListener(){
+    const orderButton = document.getElementById("order");
+    orderButton.addEventListener("click", (event)=>{
         let inputName = document.getElementById('firstName');
         let inputLastName = document.getElementById('lastName');
         let inputAdress = document.getElementById('address');
         let inputCity = document.getElementById('city');
         let inputMail = document.getElementById('email');
         let idProducts = [];
-        for (let i = 0; i<produitLocalStorage.length;i++) {
-            idProducts.push(produitLocalStorage[i].idProduit);
+        for (let i = 0; i<localStorageCart.length;i++) {
+            idProducts.push(localStorageCart[i].productId);
         }
         console.log(idProducts);
         const order = {
@@ -300,10 +296,10 @@ function postForm(){
         });
         })
 }
-postForm();
-© 2022 GitHub, Inc.
-Terms
-Privacy
-Security
-Status
-Docs
+
+getCart();
+getTotal();
+createChangeListeners();
+createClickListeners();
+createForm();
+createOrderButtonClickListener();

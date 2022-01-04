@@ -5,9 +5,9 @@ console.log(idProduct);
 const colorPicked = document. querySelector("#colors");
 const quantityPicked = document.querySelector("#quantity");
 
-const popupConfirmation =(quantityChoice, article, colorPicked) =>
+const popupConfirmation = (quantityPicked, article, colorPicked) =>
 {
-    if(window.confirm(`Votre commande de ${quantityChoice} ${article.name} ${colorPicked} est ajoutée au panier. Pour consulter votre panier, cliquez sur OK`))
+    if(window.confirm(`Votre commande de ${quantityPicked} ${article.name} ${colorPicked} est ajoutée au panier. Pour consulter votre panier, cliquez sur OK`))
     {
         window.location.href ="cart.html";
     }
@@ -88,21 +88,21 @@ function createaddToCart(article)
                 localStorage.setItem('cart', JSON.stringify([]));
             }
 
-            let cart = JSON.parse(localStorage.getItem("product"));
+            let cart = JSON.parse(localStorage.getItem("cart"));
 
-            const productFindInCart = cart.find((el) => el.productId === idProduct && el.articleColor === colorPicked);
+            const productFindInCart = cart.find((el) => el.productId === idProduct && el.articleColor === colorPicked.value);
 
             if (productFindInCart) {
                 let newQuantity =
-                    parseInt(product.articleQuantity) + parseInt(resultFind.articleQuantity);
-                resultFind.articleQuantity = newQuantity;
+                    parseInt(product.articleQuantity) + parseInt(productFindInCart.articleQuantity);
+                productFindInCart.articleQuantity = newQuantity;  
             }
-            else {
+            else
+            {
                 cart.push(product);
             }
-
-            cart.push(product);
-            popupConfirmation();
+            localStorage.setItem('cart', JSON.stringify(cart));
+            popupConfirmation(quantityPicked.value, article, colorPicked.value);
         }
     });
 }
