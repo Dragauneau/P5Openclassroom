@@ -92,11 +92,13 @@ function createaddToCart(article)
             if (productFindInCart) {
                 let newQuantity =
                     parseInt(product.articleQuantity) + parseInt(productFindInCart.articleQuantity);
-                productFindInCart.articleQuantity = newQuantity;  
+                productFindInCart.articleQuantity = newQuantity;
+                console.log(localStorage);
             }
             else
             {
                 cart.push(product);
+                console.log(localStorage);
             }
             localStorage.setItem('cart', JSON.stringify(cart));
             popupConfirmation(quantityPicked.value, article, colorPicked.value);
