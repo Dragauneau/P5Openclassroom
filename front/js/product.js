@@ -1,7 +1,6 @@
 const href = window.location.href;
 const url = new URL(href);
 const idProduct = url.searchParams.get("id");
-console.log(idProduct);
 const colorPicked = document. querySelector("#colors");
 const quantityPicked = document.querySelector("#quantity");
 
@@ -21,7 +20,6 @@ function getArticles()
     .then(async function (resultatAPI) 
     {
         article = await resultatAPI;
-        console.table(article);
         if (article)
         {
             getPost(article);
@@ -54,7 +52,6 @@ function getPost(article) {
 
     // Crée la liste de couleurs
     for (let colors of article.colors){
-        console.table(colors);
         let productColors = document.createElement("option");
         document.querySelector("#colors").appendChild(productColors);
         productColors.value = colors;
@@ -69,7 +66,7 @@ function createaddToCart(article)
     
     //Ecoute le panier avec 2 conditions couleur non nulle et quantité entre 1 et 100
     addToCart.addEventListener("click", (event) => {
-        if (quantityPicked.value > 0 && quantityPicked.value <= 100) {
+        if (quantityPicked.value > 0 && quantityPicked.value <= 100 && colorPicked.value !== null && colorPicked.value !=='') {
             //Récupère options de l'article à ajouter au panier
             let product =
             {
