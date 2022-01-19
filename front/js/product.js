@@ -103,6 +103,10 @@ function createaddToCart(article)
             localStorage.setItem('cart', JSON.stringify(cart));
             popupConfirmation(quantityPicked.value, article, colorPicked.value);
         }
+        else
+        {
+            window.confirm ('Une couleur et une quantitée doivent etre selectionée')
+        }
     });
 }
 

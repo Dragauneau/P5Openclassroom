@@ -238,9 +238,10 @@ function createForm(){
 }
 createForm();
 
-function createOrderButtonClickListener(){
-    const orderButton = document.getElementById("order");
-    orderButton.addEventListener("click", (event)=>{
+function createOrderFormSubmitListener(){
+    const orderForm = document.querySelector('.cart__order__form');
+    orderForm.addEventListener("submit", (event) => {
+        event.preventDefault();
         let inputName = document.getElementById('firstName');
             let inputLastName = document.getElementById('lastName');
             let inputAdress = document.getElementById('address');
@@ -283,4 +284,4 @@ function createOrderButtonClickListener(){
     }})
 }
 
-createOrderButtonClickListener();
+createOrderFormSubmitListener();
