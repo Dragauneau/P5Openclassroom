@@ -3,7 +3,6 @@ let localStorageCart = JSON.parse(localStorage.getItem("cart"));
 const positionEmptyCart = document.querySelector("#cart__items");
 function getCart(){
     // Si le panier est vide
-    console.log(localStorage);
     if (localStorageCart === null || localStorageCart.length === 0) 
     {
         const emptyCart = `<p>Votre panier est vide</p>`;
@@ -270,7 +269,6 @@ function createOrderFormSubmitListener(){
                     "Content-Type": "application/json"
                 },
             };
-            console.log(options);
             fetch("http://localhost:3000/api/products/order", options)
             .then((response) => response.json())
             .then((data) => {
