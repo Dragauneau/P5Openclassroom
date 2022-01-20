@@ -4,6 +4,7 @@ const idProduct = url.searchParams.get("id");
 const colorPicked = document. querySelector("#colors");
 const quantityPicked = document.querySelector("#quantity");
 
+// création de la pop-up de confirmation
 const popupConfirmation = (quantityPicked, article, colorPicked) =>
 {
     if(window.confirm(`Votre commande de ${quantityPicked} ${article.name} ${colorPicked} est ajoutée au panier. Pour consulter votre panier, cliquez sur OK`))
@@ -60,6 +61,7 @@ function getPost(article) {
     createaddToCart(article);
 }
 
+// Fonction ajouter au panier
 function createaddToCart(article) 
 {
     const addToCart = document.querySelector("#addToCart");
