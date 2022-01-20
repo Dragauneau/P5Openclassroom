@@ -29,8 +29,8 @@ async function getCart(){
                 console.log(product);
                 let idProduct =localStorageCart[product].productId;
                 console.log(idProduct);
-                let price = products[idProduct.price];
-                console.log(price)
+                let productPrice = products[idProduct].price;
+                console.log(productPrice)
                 let productArticle = document.createElement("article");
                 document.querySelector("#cart__items").appendChild(productArticle);
                 productArticle.className = "cart__item";
