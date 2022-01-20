@@ -17,11 +17,11 @@ async function getCart(){
         positionEmptyCart.innerHTML = emptyCart;
     } else 
     {   
-        let result = getArticles()
+        let result =  await getArticles()
         .then(function (resultatAPI)
         {
-            const products = resultatAPI;
-            console.log(products);
+            const articles = resultatAPI;
+            console.log(articles);
             // Si le panier n'est pas vide
             for (let product in localStorageCart)
             {
@@ -29,8 +29,8 @@ async function getCart(){
                 console.log(product);
                 let idProduct =localStorageCart[product].productId;
                 console.log(idProduct);
-                let productPrice = products[idProduct].price;
-                console.log(productPrice)
+                let price = articles[idProduct];
+                console.log(price)
                 let productArticle = document.createElement("article");
                 document.querySelector("#cart__items").appendChild(productArticle);
                 productArticle.className = "cart__item";
