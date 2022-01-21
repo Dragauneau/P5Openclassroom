@@ -11,6 +11,7 @@ async function fillSection()
     .then(function (resultatAPI)
     {
         const articles = resultatAPI;
+        console.log(resultatAPI)
         for (let article in articles)
         {
             // Crée l'élément "a"

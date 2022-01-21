@@ -2,14 +2,10 @@
 let localStorageCart = JSON.parse(localStorage.getItem("cart"));
 const positionEmptyCart = document.querySelector("#cart__items");
 
-async function getArticles() 
-{
-    // Récupère les articles de l'API
-    let articles = await fetch("http://localhost:3000/api/products")
-    return await articles.json();
-}
+
 // Récupération du panier
-async function getCart(){
+function getCart()
+{
     // Si le panier est vide
     if (localStorageCart === null || localStorageCart.length === 0) 
     {
@@ -17,20 +13,17 @@ async function getCart(){
         positionEmptyCart.innerHTML = emptyCart;
     } else 
     {   
-        let result =  await getArticles()
-        .then(function (resultatAPI)
+        
+        // Si le panier n'est pas vide
+        for (let product in localStorageCart)
         {
-            const articles = resultatAPI;
-            console.log(articles);
-            // Si le panier n'est pas vide
-            for (let product in localStorageCart)
-            {
-                // Insert l'élément "article"
-                console.log(product);
-                let idProduct =localStorageCart[product].productId;
-                console.log(idProduct);
-                let price = articles[idProduct];
-                console.log(price)
+            // Insert l'élément "article"
+            let idProduct =localStorageCart[product].productId;
+            fetch("http://localhost:3000/api/products/" + idProduct)
+            .then((response) => response.json())
+            .then((data) =>
+            {   
+                let price = data.price;
                 let productArticle = document.createElement("article");
                 document.querySelector("#cart__items").appendChild(productArticle);
                 productArticle.className = "cart__item";
@@ -51,7 +44,7 @@ async function getCart(){
                 // Insert l'élément "div"
                 let productItemContentTitlePrice = document.createElement("div");
                 productItemContent.appendChild(productItemContentTitlePrice);
-                productItemContentTitlePrice.className = "cart__item__content__titlePrice"
+                productItemContentTitlePrice.className = "cart__item__content__titlePrice";
                 // Insert le titre h3
                 let productTitle = document.createElement("h2");
                 productItemContentTitlePrice.appendChild(productTitle);
@@ -64,7 +57,7 @@ async function getCart(){
                 // va chercher le prix dans l'api et insert le prix
                 let productPrice = document.createElement("p");
                 productItemContentTitlePrice.appendChild(productPrice);
-                productPrice.innerHTML = " €";
+                productPrice.innerHTML = price + " €";
                 // Insert l'élément "div"
                 let productItemContentSettings = document.createElement("div");
                 productItemContent.appendChild(productItemContentSettings);
@@ -89,27 +82,33 @@ async function getCart(){
                 // Insert l'élément "div"
                 let productItemContentSettingsDelete = document.createElement("div");
                 productItemContentSettings.appendChild(productItemContentSettingsDelete);
-                productItemContentSettingsDelete.className = "cart__item__content__settings__delete";
+                productItemContentSettingsDelete.className = "cart__item__content__settings__delete";                    
                 // Insert le "p" supprimer
                 let productDelete = document.createElement("p");
                 productItemContentSettingsDelete.appendChild(productDelete);
                 productDelete.className = "deleteItem";
                 productDelete.innerHTML = "Supprimer";
-            }
-        })
+            })
+            .catch((err) => {
+                alert ("Problème avec fetch : " + err.message);
+            });
+        }
     }
 }
 
-getCart();
 
 function getTotal(){
     // Récupère le total des quantités
+    getCart();
     var elemsQtt = document.getElementsByClassName('itemQuantity');
+    console.log(elemsQtt);
     var myLength = elemsQtt.length,
     totalQtt = 0;
+    console.log(myLength);
     for (var i = 0; i < myLength; ++i) 
     {
         totalQtt += elemsQtt[i].valueAsNumber;
+        console.log(valueAsNumber);
     }
     let productTotalQuantity = document.getElementById('totalQuantity');
     productTotalQuantity.innerHTML = totalQtt;
@@ -117,12 +116,12 @@ function getTotal(){
     totalPrice = 0;
     for (var i = 0; i < myLength; ++i) 
     {
-        totalPrice += (elemsQtt[i].valueAsNumber * localStorageCart[i].articlePrice);
+        totalPrice += (elemsQtt[i].valueAsNumber);
     }
     let productTotalPrice = document.getElementById('totalPrice');
     productTotalPrice.innerHTML = totalPrice;
 }
-getTotal();
+
 
 // Pour modifier une quantité de produit
 function createChangeListeners(){
@@ -144,7 +143,6 @@ function createChangeListeners(){
         })
     }
 }
-createChangeListeners();
 
 // Pour supprimer un produit
 function createClickListeners(){
@@ -165,7 +163,6 @@ function createClickListeners(){
         })
     }
 }
-createClickListeners();
 
 //Formulaire regex
 function createForm(){
@@ -258,7 +255,6 @@ function createForm(){
         }
     };
 }
-createForm();
 
 // Création de la validation de commande
 function createOrderFormSubmitListener(){
@@ -307,4 +303,9 @@ function createOrderFormSubmitListener(){
     }})
 }
 
+getCart();
+getTotal();
+createChangeListeners();
+createClickListeners();
+createForm();
 createOrderFormSubmitListener();
